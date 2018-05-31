@@ -9,7 +9,6 @@ import (
 
 func main() {
 	botToken := os.Getenv("TELEGRAM_TOKEN")
-	log.Printf(botToken)
 	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		log.Panic(err)
@@ -23,7 +22,6 @@ func main() {
 	u.Timeout = 60
 
 	updates, err := bot.GetUpdatesChan(u)
-
 	for update := range updates {
 		if update.Message == nil {
 			continue
@@ -31,10 +29,22 @@ func main() {
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-		msg.ReplyToMessageID = update.Message.MessageID
+		if update.Message.Text == "/start" {
+			bot.Send(getReplyMessage(update.Message.Chat.ID, update.Message.Text))
+		}
 
-		bot.Send(msg)
 	}
+}
 
+func getReplyMessage(chatID int64, message string) tgbotapi.MessageConfig {
+	commands := tgbotapi.NewReplyKeyboard(
+		[]tgbotapi.KeyboardButton{
+			tgbotapi.NewKeyboardButton("Happy"),
+			tgbotapi.NewKeyboardButton("Sad"),
+		},
+	)
+
+	msg := tgbotapi.NewMessage(chatID, "How are you feeling?")
+	msg.ReplyMarkup = commands
+	return msg
 }
