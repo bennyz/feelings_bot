@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/peterhellberg/giphy"
 )
 
 func main() {
@@ -28,15 +29,22 @@ func main() {
 		}
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-		if update.Message.Text == "/start" {
-			bot.Send(getReplyMessage(update.Message.Chat.ID, update.Message.Text))
+		message := update.Message.Text
+		chatID := update.Message.Chat.ID
+		if message == "/start" {
+			bot.Send(getReplyMessage(chatID,
+				message,
+				"How are you feeling?"))
+		} else if message == "Sad" || message == "Happy" {
+			bot.Send(getReplyMessage(chatID,
+				message,
+				getGIF(message)))
 		}
 
 	}
 }
 
-func getReplyMessage(chatID int64, message string) tgbotapi.MessageConfig {
+func getReplyMessage(chatID int64, message string, reply string) tgbotapi.MessageConfig {
 	commands := tgbotapi.NewReplyKeyboard(
 		[]tgbotapi.KeyboardButton{
 			tgbotapi.NewKeyboardButton("Happy"),
@@ -44,7 +52,13 @@ func getReplyMessage(chatID int64, message string) tgbotapi.MessageConfig {
 		},
 	)
 
-	msg := tgbotapi.NewMessage(chatID, "How are you feeling?")
+	msg := tgbotapi.NewMessage(chatID, reply)
 	msg.ReplyMarkup = commands
 	return msg
+}
+
+func getGIF(text string) string {
+	g := giphy.DefaultClient
+	s, _ := g.Search([]string{text})
+	return s.Data[0].URL
 }
