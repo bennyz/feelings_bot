@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"os"
+	"time"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/peterhellberg/giphy"
@@ -60,5 +62,9 @@ func getReplyMessage(chatID int64, message string, reply string) tgbotapi.Messag
 func getGIF(text string) string {
 	g := giphy.DefaultClient
 	s, _ := g.Search([]string{text})
-	return s.Data[0].URL
+
+	seed := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(seed)
+	imageIndex := r.Intn(len(s.Data))
+	return s.Data[imageIndex].URL
 }
