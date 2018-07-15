@@ -132,27 +132,4 @@ func fetchEmotion(text string) string {
 
 	log.Printf("Detected emotion: %s", key)
 	return key
-
-	// 2018/07/15 20:07:29 response Body: {"results": {"anger": 0.1554698348045349, "surprise": 0.1836523711681366, "sadness": 0.28770002722740173, "fear": 0.19637306034564972, "joy": 0.17680470645427704}}
-	// body
-
-	/*
-  return request(options).then(function (results) {
-    var res = results[0];
-    var body = results[1];
-    var warning = res.headers['X-Warning'];
-
-    if (warning) {
-      console.warn(warning);
-    }
-    if (res.statusCode !== 200) {
-      return new Error(JSON.parse(body).error)
-    }
-    results = JSON.parse(body).results;
-    results = postprocess(results, name);
-
-    return results
-  });
-
-  */
 }
