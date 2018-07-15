@@ -97,7 +97,7 @@ func resolveEmotion(text string) string {
 }
 
 func fetchEmotion(text string) string {
-	url := "https://apiv2.indico.io/emotion"
+	const url = "https://apiv2.indico.io/emotion"
 	var jsonStr = []byte(`{"data": "` + text + `", "top_n": 1}`)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("X-ApiKey", indicoKey)
@@ -118,10 +118,8 @@ func fetchEmotion(text string) string {
 	log.Println("response Body:", string(body))
 
 	var jsonResponse indicoResponse
-	// var jsonResponse map[string]interface{}
 	json.Unmarshal(body, &jsonResponse)
 
-	//var results map[string]interface{} = jsonResponse["results"]
 	results := jsonResponse.Results
 
 	key := text
